@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cozy Crochet Corner (India)</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div>
+                <h1>Cozy Crochet Corner</h1>
+                <p>Handmade with love, stitch by stitch | Local Indian Store</p>
+            </div>
+            <div id="user-profile-status" class="profile-status">
+                <button class="auth-trigger-btn" onclick="openAuthModal()">👤 Login / Signup</button>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <button class="nav-link active" onclick="switchPage('keychains')">🔑 Keychains</button>
+        <button class="nav-link" onclick="switchPage('plushes')">🧸 Plushes</button>
+        <button class="nav-link" onclick="switchPage('bags')">🛒 Cart & Checkout</button>
+        <button class="nav-link" onclick="switchPage('help')">❓ Help</button>
+    </nav>
+
+    <div class="container">
+
+        <section id="keychains" class="page active">
+            <h2>Our Custom Keychains</h2>
+            <div class="menu-grid">
+                <div class="card">
+                    <div class="card-img">🌸</div>
+                    <div class="card-info">
+                        <div class="card-title">Crochet Flower Keychain</div>
+                        <div class="card-price">₹399</div>
+                        <button class="order-btn" onclick="addToCart('Crochet Flower Keychain', 399)">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">🥑</div>
+                    <div class="card-info">
+                        <div class="card-title">Mini Avocado Keychain</div>
+                        <div class="card-price">₹449</div>
+                        <button class="order-btn" onclick="addToCart('Mini Avocado Keychain', 449)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="plushes" class="page">
+            <h2>Cute Amigurumi Plushes</h2>
+            <div class="menu-grid">
+                <div class="card">
+                    <div class="card-img">🐻</div>
+                    <div class="card-info">
+                        <div class="card-title">Chubby Teddy Bear</div>
+                        <div class="card-price">₹1,199</div>
+                        <button class="order-btn" onclick="addToCart('Chubby Teddy Bear', 1199)">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">🐝</div>
+                    <div class="card-info">
+                        <div class="card-title">Bumblebee Plushie</div>
+                        <div class="card-price">₹999</div>
+                        <button class="order-btn" onclick="addToCart('Bumblebee Plushie', 999)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="bags" class="page">
+            <h2>Shopping Cart & Checkout</h2>
+            
+            <div class="checkout-box">
+                <h3>Items in your Cart</h3>
+                <div id="cart-items-list" class="empty-cart-text">
+                    Your cart is empty. Add some handmade items to get started!
+                </div>
+                <div class="total-bar">
+                    <span>Total Amount:</span>
+                    <span id="cart-total-price">₹0</span>
+                </div>
+            </div>
+
+            <div id="checkout-form-section" class="checkout-box" style="display: none;">
+                <form id="ecom-order-form" action="https://api.web3forms.com/submit" method="POST">
+                    
+                    <input type="hidden" name="access_key" d23841d4-f6fa-43ce-a4aa-59ee41da3492">
+                    <input type="hidden" name="subject" value="New Crochet Store Order Received">
+                    
+                    <input type="hidden" name="Order_ID" id="hidden-order-id">
+                    <input type="hidden" name="Items_Ordered" id="hidden-cart-data">
+                    <input type="hidden" name="Final_Bill_Total" id="hidden-total-bill">
+                    <input type="hidden" name="Payment_Status" id="hidden-payment-status">
+                    <input type="hidden" name="Buyer_Account" id="hidden-buyer-account" value="Guest User">
+
+                    <h3 class="form-title">Delivery Details</h3>
+                    
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="Customer_Name" id="cust-name" placeholder="Rahul Sharma" class="form-input" required>
+
+                    <label class="form-label">Shipping Address</label>
+                    <textarea name="Customer_Address" id="cust-address" placeholder="House No, Street, Locality, City, State" class="form-input form-textarea" required></textarea>
+
+                    <label class="form-label">6-Digit Pincode</label>
+                    <input type="text" name="Pincode" id="cust-pincode" placeholder="110001" pattern="[0-9]{6}" maxlength="6" class="form-input" required>
+
+                    <h3 class="form-title form-divider">Select Payment Option</h3>
+                    
+                    <div class="payment-options">
+                        <label class="radio-label">
+                            <input type="radio" name="Payment_Method" value="COD" checked> Cash on Delivery (COD)
+                        </label>
+                        <p class="payment-desc">Pay cash or scan the delivery agent's UPI QR code banner plate upon arrival.</p>
+
+                        <label class="radio-label">
+                            <input type="radio" name="Payment_Method" value="UPI"> Instant UPI Transfer (GPay / PhonePe / Paytm)
+                        </label>
+                        <p class="payment-desc">Launches mobile financial applications automatically to transfer directly to our account handle.</p>
+                    </div>
+
+                    <button type="submit" class="order-btn place-order-btn">Place Order</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="help" class="page">
+            <h2>Help & FAQs</h2>
+            <div class="help-box">
+                <h3>Is my account secure?</h3>
+                <p>Yes. Your user credentials are processed completely via cryptographic server mechanisms hosted directly by Supabase Enterprise cloud networks.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <div id="auth-modal-overlay" class="modal-overlay">
+        <div class="modal-box">
+            <span class="close-modal-btn" onclick="closeAuthModal()">✕</span>
+            
+            <div id="login-form-view">
+                <h3>Account Login</h3>
+                <p class="modal-subtitle">Welcome back! Access your shopping dashboard.</p>
+                <form onsubmit="handleUserLogin(event)">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="login-email" class="form-input" placeholder="name@email.com" required>
+                    
+                    <label class="form-label">Password</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+                    
+                    <button type="submit" class="order-btn modal-submit-btn">Sign In</button>
+                </form>
+                <p class="switch-view-text">New to our shop? <span onclick="toggleAuthView('signup')">Create an account</span></p>
+            </div>
+
+            <div id="signup-form-view" style="display: none;">
+                <h3>Create Account</h3>
+                <p class="modal-subtitle">Sign up to join our secure crochet community matrix.</p>
+                <form onsubmit="handleUserSignup(event)">
+                    <label class="form-label">Your Full Name</label>
+                    <input type="text" id="signup-name" class="form-input" placeholder="Rahul Sharma" required>
+
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="signup-email" class="form-input" placeholder="name@email.com" required>
+                    
+                    <label class="form-label">Choose Password</label>
+                    <input type="password" id="signup-password" class="form-input" placeholder="Minimum 6 characters" minlength="6" required>
+                    
+                    <button type="submit" class="order-btn modal-submit-btn">Register</button>
+                </form>
+                <p class="switch-view-text">Already have an account? <span onclick="toggleAuthView('login')">Sign in here</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

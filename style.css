@@ -1,0 +1,328 @@
+/* --- CSS VARIABLES & CHROMATIC THEMING --- */
+:root {
+    --primary-color: #d4a373;
+    --secondary-color: #fefae0;
+    --dark-color: #bc6c25;
+    --text-color: #4a3319;
+    --bg-color: #faf7f2;
+}
+
+/* --- GLOBAL LAYOUT RESETS --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding-bottom: 40px;
+}
+
+/* --- HEADER SYSTEM BRAND LAYERS --- */
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1.5rem 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.2rem;
+}
+
+.profile-status {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.auth-trigger-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logout-link {
+    color: #fff;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+/* --- STICKY STRUCTURAL NAVIGATION --- */
+nav {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: center;
+    background-color: var(--dark-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+nav button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-weight: 600;
+    flex: 1 1 auto; 
+    text-align: center;
+}
+
+nav button:hover, nav button.active {
+    background-color: var(--primary-color);
+}
+
+/* --- SITE CONTENT HOUSING --- */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+h2 {
+    margin-bottom: 1rem;
+    font-size: 1.6rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+/* --- CORE FLEX GRID COMPONENT MODEL METRICS --- */
+.menu-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.card-img {
+    height: 180px;
+    background-color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+}
+
+.card-info {
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-title {
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+.card-price {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+/* --- INTERACTIVE ACTION BUTTON COMPILING STYLES --- */
+.order-btn {
+    background-color: var(--dark-color);
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: auto;
+    font-size: 1rem;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent; 
+}
+
+.order-btn:hover {
+    background-color: var(--primary-color);
+}
+
+/* --- TRANSACTION FORM WORKSPACE INTERFACES --- */
+.checkout-box {
+    background: white; 
+    padding: 1.5rem; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+    margin-bottom: 1.5rem;
+}
+
+.empty-cart-text {
+    margin: 1rem 0; 
+    font-size: 0.95rem; 
+    color: #555;
+}
+
+.total-bar {
+    border-top: 2px dashed #eee; 
+    padding-top: 1rem; 
+    font-weight: bold; 
+    font-size: 1.15rem; 
+    display: flex; 
+    justify-content: space-between;
+}
+
+.form-title {
+    margin-bottom: 1rem; 
+    color: var(--dark-color);
+}
+
+.form-divider {
+    margin: 1.5rem 0 1rem 0; 
+    border-top: 1px solid #eee; 
+    padding-top: 1rem;
+}
+
+.form-label {
+    display: block; 
+    margin-bottom: 0.5rem; 
+    font-weight: 600;
+}
+
+.form-input {
+    width: 100%; 
+    padding: 0.6rem; 
+    margin-bottom: 1rem; 
+    border: 1px solid #ccc; 
+    border-radius: 6px;
+}
+
+.form-textarea {
+    height: 80px; 
+    resize: none;
+}
+
+.radio-label {
+    display: flex; 
+    align-items: center; 
+    gap: 0.5rem; 
+    margin-bottom: 0.5rem; 
+    font-weight: 600; 
+    cursor: pointer;
+}
+
+.payment-desc {
+    font-size: 0.85rem; 
+    color: #666; 
+    margin-left: 1.5rem; 
+    margin-bottom: 0.8rem;
+}
+
+.place-order-btn {
+    width: 100%; 
+    padding: 1rem; 
+    margin-top: 1rem;
+}
+
+/* --- CLOUD AUTH OVERLAY CONTAINER MODULES --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.modal-box {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 1rem; right: 1.2rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close-modal-btn:hover { color: #333; }
+.modal-subtitle { font-size: 0.85rem; color: #777; margin-bottom: 1.2rem; }
+.modal-submit-btn { width: 100%; padding: 0.75rem; margin-top: 0.5rem; }
+
+.switch-view-text {
+    text-align: center;
+    font-size: 0.85rem;
+    margin-top: 1.2rem;
+    color: #555;
+}
+
+.switch-view-text span {
+    color: var(--dark-color);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.help-box {
+    background: white; padding: 1.5rem; border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); line-height: 1.6;
+}
+
+/* --- PLATFORM SCREEN PORT CONSTRAINTS --- */
+@media (min-width: 600px) {
+    header h1 { font-size: 2.2rem; }
+    nav button { font-size: 1rem; padding: 1rem 1.5rem; flex: 0 1 auto; }
+    .menu-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+    .menu-grid { grid-template-columns: repeat(3, 1fr); }
+}
