@@ -3,24 +3,29 @@ let shoppingCart = [];
 let currentUserSession = null;
 
 // --- CONFIGURATION: PASTE YOUR FREE SUPABASE CLOUD API LINKS HERE ---
-const SUPABASE_URL = "https://ftpqjaqixafsnwgfvckd.supabase.co"; // Replace with your real Supabase project link URL
-const SUPABASE_ANON_KEY = "sb_publishable_UBB-hxBmMsJFGWgeGLOiTA_w5PpA1Gg";  // Replace with your real Project Anon API string
+const SUPABASE_URL = "https://ftpqjaqixafsnwgfvckd.supabase.co"; 
+const SUPABASE_ANON_KEY = "sb_publishable_UBB-hxBmMsJFGWgeGLOiTA_w5PpA1Gg";  
 
 // --- CONFIGURATION: SET YOUR INDIAN MERCHANT PAYMENT HANDLES HERE ---
-const MERCHANT_UPI_ID = "psydozo@okcici"; 
-const MERCHANT_NAME = "kpsy";   
+const MERCHANT_UPI_ID = "psydozo@okicici"; 
+const MERCHANT_NAME = "kpsy";    
 
-// Fixed initialization to eliminate script variable library scope crash
+// --- TEXT-BASED LOCATION REGULATION MATRIX ---
+const ALLOWED_COD_CITIES = ["mon", "kohima", "dimapur"];
+
+// Initialize connection to your Supabase Client safely
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// RUN AT SYSTEM INITIALIZATION: Evaluate persistent account cookies inside active session caches
+// RUN AT SYSTEM INITIALIZATION
 document.addEventListener("DOMContentLoaded", () => {
     const savedSession = localStorage.getItem("activeUserSession");
     if (savedSession) {
         currentUserSession = JSON.parse(savedSession);
         updateHeaderWithProfile();
+        renderOrderHistory();
     }
     renderCart();
+    setupAddressTextListener(); // Listens directly to structural keywords inside address box
 });
 
 // View Workspace Page Switching Engine Controller
@@ -36,6 +41,91 @@ function switchPage(pageId) {
     if(window.event) {
         window.event.currentTarget.classList.add('active');
     }
+}
+
+// Scans user's address field input dynamically for specific words to unlock COD
+function setupAddressTextListener() {
+    const addressField = document.getElementById('cust-address');
+    if(!addressField) return;
+
+    addressField.addEventListener('input', function() {
+        const textContent = this.value.toLowerCase();
+        const codContainer = document.getElementById('cod-payment-container');
+        const warningLabel = document.getElementById('cod-blocked-warning');
+        const upiRadioBtn = document.getElementById('pay-method-upi');
+        const codRadioBtn = document.getElementById('pay-method-cod');
+
+        // Check if the text matches any permitted cities
+        const matchesLocation = ALLOWED_COD_CITIES.some(city => textContent.includes(city));
+
+        if (matchesLocation) {
+            if (codContainer) codContainer.style.display = 'block';
+            if (warningLabel) warningLabel.style.display = 'none';
+        } else {
+            if (codContainer) codContainer.style.display = 'none';
+            if (warningLabel) warningLabel.style.display = 'block';
+            if (codRadioBtn && codRadioBtn.checked) {
+                upiRadioBtn.checked = true; // Roll back over safely to prepaid UPI
+            }
+        }
+    });
+}
+
+// --- ORDER HISTORY MANAGEMENT ENGINE ---
+function saveOrderToHistory(orderData) {
+    if (!currentUserSession) return; // Ignore tracking metrics for guest checkouts
+    
+    const trackingKey = `orders_${currentUserSession.email}`;
+    let previousOrders = [];
+    
+    try {
+        const stored = localStorage.getItem(trackingKey);
+        if (stored) previousOrders = JSON.parse(stored);
+    } catch(e) { console.error(e); }
+
+    previousOrders.unshift(orderData); // Place new orders at the top of the history list
+    localStorage.setItem(trackingKey, JSON.stringify(previousOrders));
+    renderOrderHistory();
+}
+
+function renderOrderHistory() {
+    const sectionBlock = document.getElementById('customer-history-section');
+    const logsContainer = document.getElementById('history-items-container');
+    if (!sectionBlock || !logsContainer) return;
+
+    if (!currentUserSession) {
+        sectionBlock.style.display = 'none';
+        return;
+    }
+
+    sectionBlock.style.display = 'block';
+    const trackingKey = `orders_${currentUserSession.email}`;
+    let userOrders = [];
+
+    try {
+        const stored = localStorage.getItem(trackingKey);
+        if (stored) userOrders = JSON.parse(stored);
+    } catch(e) { console.error(e); }
+
+    if (userOrders.length === 0) {
+        logsContainer.innerHTML = `<p style="color: #777; font-size: 0.9rem; margin: 0;">No purchase records registered yet under this profile account line.</p>`;
+        return;
+    }
+
+    let logsHtml = '<div style="max-height: 250px; overflow-y: auto; padding-right: 5px;">';
+    userOrders.forEach(order => {
+        logsHtml += `
+            <div style="background: #ffffff; padding: 10px; margin-bottom: 8px; border-radius: 4px; border-left: 4px solid #6b8e23; font-size: 0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 4px;">
+                    <span style="color: #2c3e50;">${order.id}</span>
+                    <span style="color: #6b8e23;">${order.billTotal}</span>
+                </div>
+                <div style="color: #555; margin-bottom: 4px;"><strong>Items:</strong> ${order.items}</div>
+                <div style="font-size: 0.75rem; color: #888;">Method: ${order.method} | Status: <span style="font-style: italic; color:#444;">${order.status}</span></div>
+            </div>`;
+    });
+    logsHtml += '</div>';
+    logsContainer.innerHTML = logsHtml;
 }
 
 // --- CLOUD INFRASTRUCTURE AUTHENTICATION LOGIC SUBSYSTEMS ---
@@ -58,37 +148,34 @@ function toggleAuthView(viewType) {
     }
 }
 
-// Subsystem Handler: Cloud Database Account Registration
 async function handleUserSignup(event) {
     event.preventDefault();
     const name = document.getElementById('signup-name').value.trim();
     const email = document.getElementById('signup-email').value.trim().toLowerCase();
     const password = document.getElementById('signup-password').value;
 
-    // Secure async remote call to Supabase auth client
     const { data, error } = await supabaseClient.auth.signUp({
         email: email,
         password: password,
-        options: {
-            data: { display_name: name } 
-        }
+        options: { data: { display_name: name } }
     });
 
     if (error) {
         alert(`Cloud Core Registry Alert: ${error.message}`);
     } else {
-        alert(`👋 Signup processed for ${name}! Please attempt logging in now with your selected credentials.`);
+        alert(`👋 Signup processed for ${name}! Please login now with your selected credentials.`);
         closeAuthModal();
     }
 }
 
-// Subsystem Handler: Cloud Database Identity Verification
 async function handleUserLogin(event) {
+    // Intercept default routing so authentication loops never fire twice or submit hidden carts
     event.preventDefault();
+    event.stopImmediatePropagation(); 
+
     const email = document.getElementById('login-email').value.trim().toLowerCase();
     const password = document.getElementById('login-password').value;
 
-    // Secure async login validation processing loop 
     const { data, error } = await supabaseClient.auth.signInWithPassword({
         email: email,
         password: password
@@ -97,7 +184,6 @@ async function handleUserLogin(event) {
     if (error) {
         alert(`Access Verification Denied: ${error.message}`);
     } else {
-        // Build tracking memory properties
         currentUserSession = {
             name: data.user.user_metadata.display_name,
             email: data.user.email
@@ -105,6 +191,7 @@ async function handleUserLogin(event) {
         
         localStorage.setItem("activeUserSession", JSON.stringify(currentUserSession));
         updateHeaderWithProfile();
+        renderOrderHistory(); // Load previous order database logs cleanly
         alert(`Welcome back, ${currentUserSession.name}!`);
         closeAuthModal();
     }
@@ -119,13 +206,17 @@ function handleUserLogout() {
     `;
     document.getElementById('hidden-buyer-account').value = "Guest User";
     document.getElementById('cust-name').value = '';
+    
+    const historyPanel = document.getElementById('customer-history-section');
+    if (historyPanel) historyPanel.style.display = 'none';
+    
     alert("Logged out successfully.");
 }
 
 function updateHeaderWithProfile() {
     if (currentUserSession) {
         document.getElementById('user-profile-status').innerHTML = `
-            <span>🇮🇳 Namaste, <strong>${currentUserSession.name}</strong></span>
+            <span> Namaste, <strong>${currentUserSession.name}</strong></span>
             <span class="logout-link" onclick="handleUserLogout()">Logout</span>
         `;
         document.getElementById('hidden-buyer-account').value = `${currentUserSession.name} (${currentUserSession.email})`;
@@ -185,12 +276,24 @@ function removeFromCart(index) {
 
 // --- SUBMIT COMPILATION & INDIAN UPI SYSTEM DEEP-LINKS ---
 document.getElementById('ecom-order-form').addEventListener('submit', function(event) {
+    // Structural security layer stopping multiple clicks or double submissions
     event.preventDefault();
+    event.stopImmediatePropagation();
 
     const name = document.getElementById('cust-name').value.trim();
     const pincode = document.getElementById('cust-pincode').value.trim();
-    const paymentMethod = document.querySelector('input[name="Payment_Method"]:checked').value;
+    const checkedMethodInput = document.querySelector('input[name="Payment_Method"]:checked');
+    const paymentMethod = checkedMethodInput ? checkedMethodInput.value : "UPI";
     
+    // Explicit Validation Check targeting the verified container element securely
+    if (typeof hcaptcha !== 'undefined') {
+        const hCaptchaResponse = hcaptcha.getResponse();
+        if (!hCaptchaResponse) {
+            alert("Please complete the security hCaptcha check before placing your order.");
+            return;
+        }
+    }
+
     if (pincode.length !== 6 || isNaN(pincode)) {
         alert("Please enter a valid 6-digit Indian Pincode.");
         return;
@@ -204,9 +307,19 @@ document.getElementById('ecom-order-form').addEventListener('submit', function(e
     document.getElementById('hidden-cart-data').value = cartSummary;
     document.getElementById('hidden-total-bill').value = `₹${rawPrice}`;
 
+    // Compile local structured recording values
+    const structuredOrderRecord = {
+        id: orderId,
+        items: cartSummary,
+        billTotal: `₹${rawPrice}`,
+        method: paymentMethod,
+        status: paymentMethod === "COD" ? "Pending Approval (COD)" : "Processed Securely"
+    };
+
     if (paymentMethod === "COD") {
         document.getElementById('hidden-payment-status').value = "Pending (Cash on Delivery)";
-        alert(`🎉 Order ${orderId} placed via COD! Transferring metadata metrics to your shop dashboard email inbox...`);
+        saveOrderToHistory(structuredOrderRecord);
+        alert(`🎉 Order ${orderId} registered! Dispatching details to our shop workspace inbox...`);
         this.submit(); 
         clearCartSession();
     } 
@@ -218,12 +331,14 @@ document.getElementById('ecom-order-form').addEventListener('submit', function(e
 
         if (isMobile) {
             document.getElementById('hidden-payment-status').value = "Paid/Initiated via Mobile UPI Application Link";
+            saveOrderToHistory(structuredOrderRecord);
             window.location.href = upiDeepLinkUrl;
-            setTimeout(() => { this.submit(); clearCartSession(); }, 1000);
+            setTimeout(() => { this.submit(); clearCartSession(); }, 2500);
         } else {
-            const simulatePaid = confirm(`💻 [DESKTOP TEST SANDBOX]\n\nOn mobile web layers, this triggers installed financial transaction apps automatically configured for ₹${rawPrice}.\n\nClick 'OK' to simulate a successful client bank account payment capture trace layout.`);
+            const simulatePaid = confirm(`💻 [DESKTOP TEST SANDBOX]\n\nSimulating mobile intent handoffs for ₹${rawPrice}.\n\nClick 'OK' to process checkout operations.`);
             if (simulatePaid) {
                 document.getElementById('hidden-payment-status').value = "Paid (Simulated Desktop UPI Sandbox Core)";
+                saveOrderToHistory(structuredOrderRecord);
                 alert(`✅ Test Payment Approved!\nOrder ID: ${orderId}\n\nShipping compilation logs directly to your dashboard inbox variables...`);
                 this.submit();
                 clearCartSession();
@@ -239,6 +354,26 @@ function clearCartSession() {
     document.getElementById('cust-name').value = '';
     document.getElementById('cust-address').value = '';
     document.getElementById('cust-pincode').value = '';
+    
+    // Hide COD choice options cleanly for safety resets
+    const codContainer = document.getElementById('cod-payment-container');
+    const warningLabel = document.getElementById('cod-blocked-warning');
+    if (codContainer) codContainer.style.display = 'none';
+    if (warningLabel) warningLabel.style.display = 'block';
+
+    // Safely flush hCaptcha checkbox widget state references
+    if (typeof hcaptcha !== 'undefined') {
+        const captchaWidget = document.getElementById('checkout-captcha');
+        if (captchaWidget) {
+            try {
+                hcaptcha.reset(); 
+            } catch(e) {
+                const widgetId = captchaWidget.getAttribute('data-widget-id');
+                if (widgetId !== null) hcaptcha.reset(widgetId);
+            }
+        }
+    }
+    
     renderCart();
     if(currentUserSession) updateHeaderWithProfile();
     switchPage('keychains');
