@@ -4,24 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cozy Crochet Corner (India)</title>
+    <!-- External Stylesheet Link -->
     <link rel="stylesheet" href="style.css">
+    <!-- Web3Forms Mandatory Security Captcha Library Hook -->
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    <!-- Supabase Core Database Engine Hook -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
+    <!-- MAIN BRANDING HEADER -->
     <header>
         <div class="header-container">
             <div>
                 <h1>Cozy Crochet Corner</h1>
                 <p>Handmade with love, stitch by stitch | Local Indian Store</p>
             </div>
+            <!-- Identity Profile & Authentication Trigger Portal -->
             <div id="user-profile-status" class="profile-status">
                 <button class="auth-trigger-btn" onclick="openAuthModal()">👤 Login / Signup</button>
             </div>
         </div>
     </header>
 
+    <!-- NAVIGATION WORKSPACE CONTROLLER TABS -->
     <nav>
         <button class="nav-link active" onclick="switchPage('keychains')">🔑 Keychains</button>
         <button class="nav-link" onclick="switchPage('plushes')">🧸 Plushes</button>
@@ -29,8 +35,10 @@
         <button class="nav-link" onclick="switchPage('help')">❓ Help</button>
     </nav>
 
+    <!-- GLOBAL PAGES CONTAINER CORE -->
     <div class="container">
 
+        <!-- 1. KEYCHAINS WORKSPACE PAGE -->
         <section id="keychains" class="page active">
             <h2>Our Custom Keychains</h2>
             <div class="menu-grid">
@@ -53,6 +61,7 @@
             </div>
         </section>
 
+        <!-- 2. PLUSHES WORKSPACE PAGE -->
         <section id="plushes" class="page">
             <h2>Cute Amigurumi Plushes</h2>
             <div class="menu-grid">
@@ -75,7 +84,10 @@
             </div>
         </section>
 
+        <!-- 3. CART & CHECKOUT MANAGEMENT PAGE -->
         <section id="bags" class="page">
+            
+            <!-- Dynamic Order History Dashboard (Visible only to authenticated users) -->
             <div id="customer-history-section" class="checkout-box" style="display: none; background-color: #fcf8f2; border: 1px dashed #dca56e;">
                 <h3>📜 Your Order History</h3>
                 <div id="history-items-container">
@@ -85,6 +97,7 @@
 
             <h2>Shopping Cart & Checkout</h2>
             
+            <!-- Active Shopping Basket Display Card -->
             <div class="checkout-box">
                 <h3>Items in your Cart</h3>
                 <div id="cart-items-list" class="empty-cart-text">
@@ -96,12 +109,15 @@
                 </div>
             </div>
 
+            <!-- ECOMMERCE ORDER PROCESSING METADATA FORM -->
             <div id="checkout-form-section" class="checkout-box" style="display: none;">
                 <form id="ecom-order-form" action="https://api.web3forms.com/submit" method="POST">
                     
+                    <!-- Web3Forms Secure API Access Token -->
                     <input type="hidden" name="access_key" value="d23841d4-f6fa-43ce-a4aa-59ee41da3492">
                     <input type="hidden" name="subject" value="New Crochet Store Order Received">
                     
+                    <!-- Hidden Application State Trace Mappings -->
                     <input type="hidden" name="Order_ID" id="hidden-order-id">
                     <input type="hidden" name="Items_Ordered" id="hidden-cart-data">
                     <input type="hidden" name="Final_Bill_Total" id="hidden-total-bill">
@@ -122,6 +138,7 @@
                     <h3 class="form-title form-divider">Select Payment Option</h3>
                     
                     <div class="payment-options">
+                        <!-- Restricted Cash On Delivery Module Container -->
                         <div id="cod-payment-container" style="display: none;">
                             <label class="radio-label">
                                 <input type="radio" name="Payment_Method" id="pay-method-cod" value="COD"> Cash on Delivery (COD)
@@ -129,6 +146,7 @@
                             <p class="payment-desc">Pay cash or scan the agent's UPI QR badge plate upon delivery arrival.</p>
                         </div>
 
+                        <!-- Content-Sensitive Dynamic Location Alert Notice -->
                         <p id="cod-blocked-warning" style="color: #bc5a1a; font-size: 0.85rem; font-weight: bold; margin-bottom: 1rem; background: #fff5eb; padding: 8px; border-radius: 4px;">
                             💡 Note: COD option becomes available automatically once you type "Mon", "Kohima", or "Dimapur" inside your Shipping Address text box.
                         </p>
@@ -139,13 +157,16 @@
                         <p class="payment-desc">Launches financial applications to transfer securely to our store account handle.</p>
                     </div>
 
-                    <div id="checkout-captcha" class="h-captcha" data-sitekey="50b2b565-d548-43b4-a8e1-27c037fc1714" style="margin-bottom: 1.5rem;"></div>
+                    <!-- Explicitly Configured hCaptcha Security Container Module -->
+                    <!-- Updated dynamically with your custom GitHub developer sitekey -->
+                    <div id="checkout-captcha" class="h-captcha" data-sitekey="e2b6942c-0900-4ce4-95b8-919a21aa6bf4" style="margin-bottom: 1.5rem;"></div>
 
                     <button type="submit" class="order-btn place-order-btn">Place Order</button>
                 </form>
             </div>
         </section>
 
+        <!-- 4. HELP & FAQ KNOWLEDGEBASE PAGE -->
         <section id="help" class="page">
             <h2>Help & FAQs</h2>
             <div class="help-box">
@@ -156,10 +177,12 @@
 
     </div>
 
+    <!-- REUSABLE AUTHENTICATION HOUSING OVERLAY MODAL -->
     <div id="auth-modal-overlay" class="modal-overlay">
         <div class="modal-box">
             <span class="close-modal-btn" onclick="closeAuthModal()">✕</span>
             
+            <!-- Account Access Portal View Layer -->
             <div id="login-form-view">
                 <h3>Account Login</h3>
                 <p class="modal-subtitle">Welcome back! Access your shopping dashboard.</p>
@@ -175,9 +198,10 @@
                 <p class="switch-view-text">New to our shop? <span onclick="toggleAuthView('signup')">Create an account</span></p>
             </div>
 
+            <!-- New Registry Generation View Layer -->
             <div id="signup-form-view" style="display: none;">
                 <h3>Create Account</h3>
-                <p class="modal-subtitle">Sign up to join our secure crochet community community.</p>
+                <p class="modal-subtitle">Sign up to join our secure crochet community.</p>
                 <form onsubmit="handleUserSignup(event)">
                     <label class="form-label">Your Full Name</label>
                     <input type="text" id="signup-name" class="form-input" placeholder="Rahul Sharma" required>
@@ -195,6 +219,7 @@
         </div>
     </div>
 
+    <!-- External System JavaScript Controller Hook -->
     <script src="script.js"></script>
 </body>
 </html>
