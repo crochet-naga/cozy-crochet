@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cozy Crochet Corner (India)</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -75,6 +76,13 @@
         </section>
 
         <section id="bags" class="page">
+            <div id="customer-history-section" class="checkout-box" style="display: none; background-color: #fcf8f2; border: 1px dashed #dca56e;">
+                <h3>📜 Your Order History</h3>
+                <div id="history-items-container">
+                    <p style="color: #777; font-size: 0.9rem;">No orders recorded under this account yet.</p>
+                </div>
+            </div>
+
             <h2>Shopping Cart & Checkout</h2>
             
             <div class="checkout-box">
@@ -106,24 +114,32 @@
                     <input type="text" name="Customer_Name" id="cust-name" placeholder="Rahul Sharma" class="form-input" required>
 
                     <label class="form-label">Shipping Address</label>
-                    <textarea name="Customer_Address" id="cust-address" placeholder="House No, Street, Locality, City, State" class="form-input form-textarea" required></textarea>
+                    <textarea name="Customer_Address" id="cust-address" placeholder="Specify address, including your city (e.g., Kohima, Mon, Dimapur)" class="form-input form-textarea" required></textarea>
 
                     <label class="form-label">6-Digit Pincode</label>
-                    <input type="text" name="Pincode" id="cust-pincode" placeholder="110001" pattern="[0-9]{6}" maxlength="6" class="form-input" required>
+                    <input type="text" name="Pincode" id="cust-pincode" placeholder="797001" pattern="[0-9]{6}" maxlength="6" class="form-input" required>
 
                     <h3 class="form-title form-divider">Select Payment Option</h3>
                     
                     <div class="payment-options">
-                        <label class="radio-label">
-                            <input type="radio" name="Payment_Method" value="COD" checked> Cash on Delivery (COD)
-                        </label>
-                        <p class="payment-desc">Pay cash or scan the delivery agent's UPI QR code banner plate upon arrival.</p>
+                        <div id="cod-payment-container" style="display: none;">
+                            <label class="radio-label">
+                                <input type="radio" name="Payment_Method" id="pay-method-cod" value="COD"> Cash on Delivery (COD)
+                            </label>
+                            <p class="payment-desc">Pay cash or scan the agent's UPI QR badge plate upon delivery arrival.</p>
+                        </div>
+
+                        <p id="cod-blocked-warning" style="color: #bc5a1a; font-size: 0.85rem; font-weight: bold; margin-bottom: 1rem; background: #fff5eb; padding: 8px; border-radius: 4px;">
+                            💡 Note: COD option becomes available automatically once you type "Mon", "Kohima", or "Dimapur" inside your Shipping Address text box.
+                        </p>
 
                         <label class="radio-label">
-                            <input type="radio" name="Payment_Method" value="UPI"> Instant UPI Transfer (GPay / PhonePe / Paytm)
+                            <input type="radio" name="Payment_Method" id="pay-method-upi" value="UPI" checked> Instant UPI Transfer (GPay / PhonePe / Paytm)
                         </label>
-                        <p class="payment-desc">Launches mobile financial applications automatically to transfer directly to our account handle.</p>
+                        <p class="payment-desc">Launches financial applications to transfer securely to our store account handle.</p>
                     </div>
+
+                    <div id="checkout-captcha" class="h-captcha" data-sitekey="50b2b565-d548-43b4-a8e1-27c037fc1714" style="margin-bottom: 1.5rem;"></div>
 
                     <button type="submit" class="order-btn place-order-btn">Place Order</button>
                 </form>
@@ -161,7 +177,7 @@
 
             <div id="signup-form-view" style="display: none;">
                 <h3>Create Account</h3>
-                <p class="modal-subtitle">Sign up to join our secure crochet community matrix.</p>
+                <p class="modal-subtitle">Sign up to join our secure crochet community community.</p>
                 <form onsubmit="handleUserSignup(event)">
                     <label class="form-label">Your Full Name</label>
                     <input type="text" id="signup-name" class="form-input" placeholder="Rahul Sharma" required>
